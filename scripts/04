@@ -1,0 +1,14 @@
+#!/bin/sh
+echo "CURRENT_HASH=\"\$(md5sum /etc/crontab | awk '{print \$1}')\"
+if [ -f ~/previous_hash ]
+then
+ PREVIOUS_HASH=\"\$(cat ~/previous_hash)\"
+  if [ \"\$CURRENT_HASH\" != \"\$PREVIOUS_HASH\" ]
+  then
+     echo \"Cronfile has been modified!\" | mail -s \"Notification\" root
+  fi
+fi
+echo \"\$CURRENT_HASH\" > ~/previous_hash" > ~/cronscript.sh
+echo "0 0 * * * sh ~/cronscript.sh" > ~/cronfile
+crontab ~/cronfile
+rm ~/cronfile
